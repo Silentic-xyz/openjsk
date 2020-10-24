@@ -26,5 +26,8 @@
   "bugs": {
     "url": "https://github.com/Silentic-xyz/openjsk/issues"
   },
-  "homepage": "https://github.com/Silentic-xyz/openjsk#readme"
+  "homepage": "https://github.com/Silentic-xyz/openjsk#readme",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  }
 }
