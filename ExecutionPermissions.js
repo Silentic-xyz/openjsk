@@ -48,7 +48,7 @@ class ExecutionPermissions {
             else if (this.guildOwnerOnly) return false;
 
             return (
-                channel
+                channel => channel
                 ? user.permissionsIn(channel)
                 : user.permissions
             )().has(this.permissions);

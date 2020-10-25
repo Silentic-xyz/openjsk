@@ -1,5 +1,5 @@
 const { DMChannel, MessageEmbed } = require('discord.js');
-
+const { CommandContext } = require('./Context');
 
 class ICommandHandler {
     /**
@@ -62,10 +62,9 @@ class BasicCommandHandler extends ICommandHandler {
         const prefix = await ICommandHandler.getPrefix(message, this.bot);
         if (!prefix) return;
 
-        const args = [...message.content.substr(prefix.length).matchAll("\"hello \" world".matchAll(/(?:"(.+)")|([^ \n]+)/g))];
-        const cmd = args.shift();
+        const args = [...message.content.substr(prefix.length).trim().matchAll(/(?:"(.+)")|([^ \n"']+)/g)].map(a => a[1] || a[2]);
 
-        if (!cmd) {
+        if (!args[0]) {
             return message.channel.send(new MessageEmbed({
                 title: await this.bot.languager.translate("no-commands.title"),
                 description: await this.bot.languager.translate(
@@ -77,22 +76,42 @@ class BasicCommandHandler extends ICommandHandler {
             }));
         }
 
-        const command = this.bot.modules
-            .sort((a, b) => b.priority - a.priority)
-            .map(
-                a =>
-                a.commands
-                .filter(a => a.name.toLowerCase() == cmd.toLowerCase())
-                .map(a => a)
-            )
-            .filter(a => a.length > 0)[0][0];
+        const rec = async(command = null) => {
+            const cmd = args.shift();
 
-        if (!command) return;
-        try {
-            message.channel.send(command.name);
-        } catch (err) {
-            console.error(err);
+            if (command === null) {
+                command = this.bot.modules
+                .sort((a, b) => b.priority - a.priority)
+                .map(
+                    a =>
+                    a.commands
+                    .filter(a => a.name.toLowerCase() == cmd.toLowerCase())
+                    .map(a => a)
+                )
+                .filter(a => a.length > 0)[0][0];
+            }
+            else if (command.fns.has(cmd)) {
+                command = command.fns.get(cmd);
+            }
+
+            if (!command) return;
+            try {
+                if (!await command.permissions.user.isAllowed(message.member || message.author)) return;
+                if (message.guild && !message.guild.me.permissions.has(command.permissions.bot)) return;
+    
+                if (args[0] && command.fns.has(args[0])) {
+                    await rec(command);
+                }
+                else await command.fn(new CommandContext({
+                    bot: this.bot,
+                    message,
+                    args,
+                }));
+            } catch (err) {
+                console.error(err);
+            }
         }
+        await rec();
     }
 }
 module.exports.BasicCommandHandler = BasicCommandHandler;

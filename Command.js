@@ -17,7 +17,7 @@
     }} CommandMeta
  */
 
-const { Permissions, Collection, Collection } = require('discord.js');
+const { Permissions, Collection } = require('discord.js');
 const { ExecutionPermissions } = require('./ExecutionPermissions');
 
 class Command {
@@ -29,17 +29,18 @@ class Command {
         this.name = data.name;
         this.meta = data.meta || {};
 
-        this.permissions = {};
-        this.permissions.bot = new Permissions((data.permissions || {}).bot || 0);
-        this.permissions.user = new ExecutionPermissions((data.permissions || {}).user || {});
+        this.permissions = {
+            bot: new Permissions((data.permissions || {}).bot || 0),
+            user: new ExecutionPermissions((data.permissions || {}).user || {}),
+        };
 
-        this.fn = data.meta;
+        this.fn = data.fn;
 
         /**
          * @type {Collection<string, Command>}
          */
         this.fns = new Collection();
-        data.fns.forEach(a => {
+        (data.fns || []).forEach(a => {
             this.fns.set(a.name, a);
         });
     }

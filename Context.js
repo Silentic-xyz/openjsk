@@ -4,6 +4,7 @@
     @typedef {{
         message: import('discord.js').Message,
         bot: import('./Bot').Bot,
+        args: string[],
     }} ImportedCommandArgs
     @typedef {{
         bot: import('./Bot').Bot,
@@ -18,26 +19,27 @@ class CommandContext {
     constructor(ica) {
         this.message = ica.message;
         this.bot = ica.bot;
+        this.args = ica.args;
 
-        /**
-         * @type {Shell[]}
-         */
-        this.shells = [];
+        // /**
+        //  * @type {Shell[]}
+        //  */
+        // this.shells = [];
     }
 
     send(...args) {
         return this.message.channel.send(...args);
     }
 
-    get shell() {
-        const shell = new Shell(this);
-        this.shells.push(shell);
-        return shell;
-    }
+    // get shell() {
+    //     const shell = new Shell(this);
+    //     this.shells.push(shell);
+    //     return shell;
+    // }
 
-    closeAll() {
-        this.shells.forEach(a => a.close());
-    }
+    // closeAll() {
+    //     this.shells.forEach(a => a.close());
+    // }
 }
 module.exports.CommandContext = CommandContext;
 
@@ -52,53 +54,54 @@ class LoaderContext {
 }
 module.exports.LoaderContext = LoaderContext;
 
-class Shell {
-    /**
-     * Shell class
-     * @param {CommandContext} context Context
-     */
-    constructor(context) {
-        this.context = context;
+// class Shell {
+//     /**
+//      * Shell class
+//      * @param {CommandContext} context Context
+//      */
+//     constructor(context) {
+//         this.context = context;
 
-        this.text = "\u200b";
-        this.message = null;
+//         this.text = "\u200b";
+//         this.message = null;
 
-        this.timer = null;
-    }
+//         this.timer = null;
+//     }
 
-    send = async text => {
-        this.text = (a => Math.max(0, a.substr(2000 - a.length)))(this.text + text);
-        if (!this.message && !this.timer) {
-            this.message = await this.context.send(this.text);
+//     send = async text => {
+//         console.log(this.text + text);
+//         this.text = (a => a.substr(Math.max(0, 2000 - a.length)))(this.text + text);
+//         if (!this.message && !this.timer) {
+//             this.message = await this.context.send(this.text);
 
-            loop = async() => {
-                if (!this.message) this.message = await this.context.send(this.text);
-                else {
-                    try {
-                        await this.message.edit(this.text);
-                    } catch (err) {
-                        this.message = await this.context.send(this.text);
-                    }
-                }
+//             const loop = async() => {
+//                 if (!this.message) this.message = await this.context.send(this.text);
+//                 else {
+//                     try {
+//                         await this.message.edit(this.text);
+//                     } catch (err) {
+//                         this.message = await this.context.send(this.text);
+//                     }
+//                 }
 
-                setTimeout(loop, 2000);
-            }
+//                 setTimeout(loop, 2000);
+//             }
 
-            loop();
-        }
-    }
+//             loop();
+//         }
+//     }
 
-    recieve = async () => {
-        return (await this.context.message.channel.awaitMessages(
-            m => m.author.id == this.context.message.author.id,
-            {
-                max: 1,
-            }
-        )).first().content;
-    }
+//     recieve = async () => {
+//         return (await this.context.message.channel.awaitMessages(
+//             m => m.author.id == this.context.message.author.id,
+//             {
+//                 max: 1,
+//             }
+//         )).first().content;
+//     }
 
-    close() {
-        clearTimeout(this.timer);
-        if (this.message) this.message.delete().catch(() => {});
-    }
-}
+//     close() {
+//         clearTimeout(this.timer);
+//         if (this.message) this.message.delete().catch(() => {});
+//     }
+// }

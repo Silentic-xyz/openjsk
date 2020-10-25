@@ -89,7 +89,7 @@ class Bot extends Client {
                 if (!(Mod instanceof Function)) return;
                 const mod = new Mod();
                 if (!(mod instanceof Module)) return;
-                this.modules.push(mod);
+                this.modules.set(mod.name, mod);
             }
         } catch (err) {
             console.error(err);
