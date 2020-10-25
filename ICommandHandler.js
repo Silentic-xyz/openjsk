@@ -89,7 +89,7 @@ class BasicCommandHandler extends ICommandHandler {
 
         if (!command) return;
         try {
-            // imma too lazy anlso i want to go slep
+            message.channel.send(command.name);
         } catch (err) {
             console.error(err);
         }

@@ -7,7 +7,7 @@
             bot: import('discord.js').PermissionResolvable,
         },
         meta?: CommandMeta,
-        fn: (arg0: import('./Context').Context) => Promise<void>,
+        fn: (arg0: import('./Context').CommandContext) => Promise<void>,
         fns?: Command[],
     }} CommandData
     @typedef {{

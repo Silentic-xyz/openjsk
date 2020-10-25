@@ -13,7 +13,7 @@ class IStorage {
      * @param {StorageFilter} filter Filter
      * @returns {Collection<string, string>}
      */
-    async perform(filter);
+    async perform(filter) {};
 }
 module.exports.IStorage = IStorage;
 
