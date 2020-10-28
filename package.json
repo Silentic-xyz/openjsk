@@ -1,0 +1,30 @@
+{
+  "name": "openjsk",
+  "version": "1.1.0",
+  "description": "Easy-to-use discord bot handler",
+  "main": "build/Bot.js",
+  "module": "openjsk",
+  "type": "module",
+  "dependencies": {
+    "@types/node": "^14.14.5",
+    "discord.js": "^12.4.1"
+  },
+  "devDependencies": {},
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Silentic-xyz/openjsk.git"
+  },
+  "keywords": [
+    "jsk",
+    "jishaku",
+    "discord.js",
+    "handle"
+  ],
+  "author": "buj itself",
+  "license": "WTFPL",
+  "bugs": {
+    "url": "https://github.com/Silentic-xyz/openjsk/issues"
+  },
+  "homepage": "https://github.com/Silentic-xyz/openjsk#readme"
+}
