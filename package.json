@@ -2,12 +2,12 @@
   "name": "openjsk",
   "version": "1.1.0",
   "description": "Easy-to-use discord bot handler",
-  "main": "build/Bot.js",
+  "main": "build/index.js",
   "module": "openjsk",
-  "type": "module",
   "dependencies": {
     "@types/node": "^14.14.5",
-    "discord.js": "^12.4.1"
+    "discord.js": "^12.4.1",
+    "fs": "0.0.1-security"
   },
   "devDependencies": {},
   "scripts": {},
