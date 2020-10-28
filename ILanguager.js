@@ -239,12 +239,16 @@ const langs = {
 Object.freeze(langs);
 module.exports.langs = langs;
 
-class ILanguager {
+const { IPlugin } = require('./IPlugin');
+
+class ILanguager extends IPlugin {
     /**
      * Languager module
+     * @param {import('./Bot').Bot} bot Bot
      * @param {Language} lang Language to use
      */
-    constructor(lang) {
+    constructor(bot, lang) {
+        super(bot);
         this.lang = langs.hasOwnProperty(lang) ? lang : 'en';
     }
 
@@ -272,24 +276,20 @@ class ILanguager {
 module.exports.ILanguager = ILanguager;
 
 class BasicLanguager extends ILanguager {
-    /**
-     * Languager module
-     * @param {Language} lang Language to use
-     */
-    constructor(lang) {
-        super(lang);
-    }
-
     async getLanguager(lang) {
         return new BasicLanguager(lang);
     }
 
     async translate(path, format) {
-        return "Using default Languager. Please run `npm install openjsk-langs` and restart your bot to use an actual Languager plugin";
+        return "Not implemented";
     }
 
     format(str, obj) {
-        return "Using default Languager. Please run `npm install openjsk-langs` and restart your bot to use an actual Languager plugin";
+        Object.entries(obj).forEach(([k, v]) => {
+            str = str.split(`{${k}}`).join(v);
+        });
+
+        return str;
     }
 }
 module.exports.BasicLanguager = BasicLanguager;

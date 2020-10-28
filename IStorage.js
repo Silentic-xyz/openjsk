@@ -1,83 +1,61 @@
 const { Collection } = require("discord.js");
+const { IPlugin } = require('./IPlugin');
 
+/**
+    @typedef {{
+       name: string,
+       type: FieldType,
+       primary: true, 
+    }[]} TableData
+    @typedef {
+        'string' |
+        'int' |
+        'float' |
+        'bigint' |
+        'bitdouble' |
+        {
+            array: TableData,
+        } |
+        'json'
+    } FieldData
+ */
 
-class IStorage {
+class IStorage extends IPlugin {
     /**
-     * Storage module
-     * @param {import('./Bot').Bot} bot Bot
+     * Get table
+     * @param {string} name Table name
+     * @param {TableData} data Table data
+     * 
+     * @returns {ITable} Table class
      */
-    constructor(bot) { this.bot = bot };
-
-    /**
-     * Perform an action
-     * @param {StorageFilter} filter Filter
-     * @returns {Collection<string, string>}
-     */
-    async perform(filter) {};
+    async table(name, data) {}
 }
 module.exports.IStorage = IStorage;
 
-class StorageFilter {
+class ITable extends IPlugin {
     /**
-     * Filter
-     * @param {'get' | 'set' | 'delete' | "create"} action Action to perform
+     * Get entry
+     * @param {any} keys Entry keys
+     * 
+     * @returns {IEntry} Table entry
      */
-    constructor(action) {
-        this.action = action;
-
-        /**
-         * @type {string[]}
-         */
-        this._fields = null;
-        /**
-         * @type {string}
-         */
-        this._table = null;
-        /**
-         * @type {string[]}
-         */
-        this._values = null;
-    }
-
-    /**
-     * Set filter's table
-     * @param {string} table Table
-     */
-    table(table) {
-        this._table = table;
-    }
-
-    /**
-     * Set filter's fields
-     * @param {string[]} fields Fields
-     */
-    fields(fields) {
-        this._fields = fields;
-    }
-
-    /**
-     * Set filter's values
-     * @param {string[]} values Values
-     */
-    values(values) {
-        this._values = values;
-    }
-
-    static select() {
-        return new StorageFilter("get");
-    }
-
-    static update() {
-        return new StorageFilter("set");
-    }
-
-    static delete() {
-        return new StorageFilter("delete");
-    }
-
-    static create() {
-        return new StorageFilter("create");
-    }
+    async entry(keys) {}
 }
-module.exports.StorageFilter = StorageFilter;
+module.exports.ITable = ITable;
 
+class IEntry extends IPlugin {
+    /**
+     * Re-fetch entry
+     * 
+     * @returns {Promise<IEntry>} Fetching promise
+     */
+    async fetch() {}
+
+    /**
+     * Push entry
+     * 
+     * @returns {Promise<IEntry>} Pushing promise
+     */
+    async push() {}
+}
+module.exports.IEntry = IEntry;

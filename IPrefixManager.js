@@ -1,11 +1,15 @@
+const { IPlugin } = require('./IPlugin');
 
-
-class IPrefixManager {
+class IPrefixManager extends IPlugin {
     /**
      * Prefix manager interface
+     * @param {import('./Bot').Bot} bot Bot
      * @param {string[]} defaultPrefix Prefix
      */
-    constructor(defaultPrefix) { this.defaultPrefix = defaultPrefix; }
+    constructor(bot, defaultPrefix) {
+        super(bot);
+        this.defaultPrefix = defaultPrefix;
+    }
 
     /**
      * Get user/guild prefix
@@ -33,12 +37,6 @@ class IPrefixManager {
 module.exports.IPrefixManager = IPrefixManager;
 
 class BasicPrefixManager extends IPrefixManager {
-    /**
-     * Prefix manager interface
-     * @param {string[]} defaultPrefix Prefix
-     */
-    constructor(defaultPrefix) { super(defaultPrefix); }
-
     /**
      * 
      * @param {

@@ -12,7 +12,8 @@ const { Module } = require('./Module');
         import('discord.js').ClientOptions &
         {
             prefix?: string[],
-            plugins?: BotPlugins
+            plugins?: BotPlugins,
+            reactOnPing?: boolean,
         }
     } BotSettings
     @typedef {{
@@ -31,44 +32,52 @@ class Bot extends Client {
     constructor(settings = {}) {
         super(settings);
 
+        this.reactOnPing = settings.reactOnPing === undefined
+            ? true
+            : settings.reactOnPing;
+
         try {
+            if ((settings.plugins || {}).languager == 'custom') this.languager = null;
+            else this.languager = new (require((settings.plugins || {}).languager || 'openjsk-langs'))(this, 'en');
+        } catch (err) {
             /**
              * Languager
              * @type {ILanguager}
              */
-            this.languager = new (require((settings.plugins || {}).languager || 'openjsk-langs'))('en');
-        } catch (err) {
-            this.languager = new BasicLanguager('en');
+            this.languager = new BasicLanguager(this, 'en');
         }
 
         try {
+            if ((settings.plugins || {}).prefix == 'custom') this.prefix = null;
+            else this.prefix = new (require((settings.plugins || {}).prefix || 'openjsk-prefixes'))(this, (settings || {}).prefix || ["!"]);
+        } catch (err) {
             /**
              * Prefix manager
              * @type {IPrefixManager}
              */
-            this.prefix = new (require((settings.plugins || {}).prefix || 'openjsk-prefixes'))((this.settings || {}).prefix || ["!"]);
-        } catch (err) {
-            this.prefix = new BasicPrefixManager((this.settings || {}).prefix || ["!"]);
+            this.prefix = new BasicPrefixManager(this, (settings || {}).prefix || ["!"]);
         }
 
         try {
+            if ((settings.plugins || {}).handle == 'custom') this.handle = null;
+            else this.handle = new (require((settings.plugins || {}).handle || 'openjsk-bash'))(this);
+        } catch (err) {
             /**
              * Command handle
              * @type {ICommandHandler}
              */
-            this.handle = new (require((settings.plugins || {}).handle || 'openjsk-bash'))(this);
-        } catch (err) {
             this.handle = new BasicCommandHandler(this);
         }
 
         try {
+            if ((settings.plugins || {}).storage == 'custom') this.storage = null;
+            this.storage = new (require((settings.plugins || {}).storage || 'openjsk-json'))(this);
+        } catch (err) {
             /**
              * Storage manager
-             * @type {}
+             * @type {IStorage}
              */
-            this.handle = new (require((settings.plugins || {}).handle || 'openjsk-json'))(this);
-        } catch (err) {
-            this.handle = new IStorage(this);
+            this.storage = new IStorage(this);
         }
 
         /**

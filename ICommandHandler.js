@@ -1,13 +1,8 @@
 const { DMChannel, MessageEmbed } = require('discord.js');
 const { CommandContext } = require('./Context');
+const { IPlugin } = require('./IPlugin');
 
-class ICommandHandler {
-    /**
-     * 
-     * @param {import('./Bot').Bot} bot Bot this handle attached to
-     */
-    constructor(bot) { this.bot = bot; }
-
+class ICommandHandler extends IPlugin {
     /**
      * Process commands in message
      * @param {import('discord.js').Message} message Message to process
@@ -40,9 +35,13 @@ class ICommandHandler {
      * @param {import('./Bot').Bot} bot Bot
      */
     static async getPrefix(message, bot) {
-        let match;
-        if (match = message.content.match(new RegExp(`^(<@!?${bot.user.id}> *)`))) return match[1];
-        const prefixes = await bot.prefix.get(message.author);
+        if (bot.reactOnPing) {
+            let match;
+            if (match = message.content.match(new RegExp(`^(<@!?${bot.user.id}> *)`))) {
+                return match[1];
+            }
+        }
+        const prefixes = await bot.prefix.get(message.author) || [];
         for (const prefix of prefixes) {
             if (message.content.startsWith(prefix)) return prefix;
         }
