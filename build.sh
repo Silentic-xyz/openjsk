@@ -1,5 +1,3 @@
-git add *
-
 # Update build version
 v_major=$(cat version | sed -n 1p)
 v_minor=$(cat version | sed -n 2p)
@@ -42,6 +40,7 @@ build_exit_code=$?
 
 # Commit
 if [[ "$build_exit_code" = "0" ]]; then
+    git add *
     git commit -m "Вuild $v_major.$v_minor.$v_review.$v_build"
 else
     echo "Exited with error code $build_exit_code"
