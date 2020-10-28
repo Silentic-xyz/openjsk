@@ -22,7 +22,7 @@ fi
 
 echo "Building version $v_major.$v_minor.$v_review.$v_build..."
 
-npm version $v_major.$v_minor.$v_review-$v_build --allow-same-version
+npm version $v_major.$v_minor.$v_review-$v_build
 printf "$v_major\n$v_minor\n$v_review\n$v_build\n" > VERSION
 
 # Build index.ts
